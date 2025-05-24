@@ -16,7 +16,7 @@
     "build:lib": "tsc --project tsconfig.lib.json",
     "build": "npm run build:lib && npm run build:cli",
     "demo": "tsx src/demo.ts",
-    "prepublishOnly": "npm run build:all",
+    "prepublishOnly": "npm run build",
     "pub": "npm publish --access public"
   },
   "files": [
