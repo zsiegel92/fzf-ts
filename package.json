@@ -3,14 +3,18 @@
   "version": "1.0.0",
   "description": "Typescript interface to fzf utility",
   "author": "zsiegel",
-  "prepublishOnly": "npm run build",
-  "scripts": {
-    "build": "tsup",
-    "demo": "tsx src/demo.ts",
-    "dev": "tsx src/main.ts"
-  },
+  "license": "MIT",
+  "main": "dist/fzf-ts.js",
+  "types": "dist/fzf-ts.d.ts",
   "bin": {
     "fzf-ts": "dist/main.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "postbuild": "echo '#!/usr/bin/env node' | cat - dist/main.js > temp && mv temp dist/main.js && chmod +x dist/main.js",
+    "demo": "tsx src/demo.ts",
+    "dev": "tsx src/main.ts",
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
@@ -20,7 +24,15 @@
   "devDependencies": {
     "tsx": "^4.17.0",
     "@types/node": "^22.4.1",
-    "tsup": "^8.4.0",
     "typescript": "^5.8.3"
-  }
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "keywords": [
+    "fzf",
+    "fuzzy-finder",
+    "cli",
+    "typescript"
+  ]
 }
