@@ -21,6 +21,20 @@ npm install fzf-ts
 - Node.js 14 or later
 - [fzf](https://github.com/junegunn/fzf) must be installed on your system
 
+### Installing fzf
+
+**macOS (Homebrew):**
+```bash
+brew install fzf
+```
+
+**Linux (most distributions):**
+```bash
+sudo apt install fzf
+```
+
+**Other platforms:** See the [fzf installation guide](https://github.com/junegunn/fzf#installation)
+
 ## Usage
 
 ### CLI usage
@@ -39,9 +53,16 @@ All fzf command-line arguments are passed through directly to fzf.
 ### Library usage
 
 ```typescript
-import { getUserSelection } from 'fzf-ts';
+import { getUserSelection, checkIfFzfIsInstalled } from 'fzf-ts';
 
 async function example() {
+  // Optional: Check if fzf is available
+  const fzfAvailable = await checkIfFzfIsInstalled();
+  if (!fzfAvailable) {
+    console.error('fzf is not installed');
+    return;
+  }
+
   const selection = await getUserSelection({
     items: [
       { display: 'Option 1', value: 1 },
