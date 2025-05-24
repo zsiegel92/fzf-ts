@@ -55,6 +55,14 @@ async function example() {
 }
 ```
 
+## How it works
+
+This library interfaces with the `fzf` command-line tool via:
+- **stdout**: Sending items to fzf's stdin
+- **temporary files**: Communicating selection state and preview content between the Node.js process and fzf
+
+The preview functionality uses a polling mechanism with temporary files to provide dynamic previews as you navigate through items.
+
 ## API
 
 ### `getUserSelection<T extends FzfSelection>(options)`
@@ -68,6 +76,18 @@ Displays a list of items using fzf and returns the selected item.
   - Items can optionally have `previewPrefix` and `previewSuffix` strings
 - `options.fzfArgs`: Optional array of fzf command-line arguments
 - `options.getPreview`: Optional async function that returns a string preview for an item
+  - **Note**: This function is called for each item as you navigate through the list
+  - Can be slow operations like web requests - the preview will update when the async operation completes
+  - Example from `demo.ts`:
+    ```typescript
+    getPreview: async (item) => {
+      await new Promise(resolve => setTimeout(resolve, 250)); // Simulate delay
+      return `Preview for ${item.display}\n${JSON.stringify(item, null, 2)}`;
+    }
+    ```
+- `options.debounceMs`: Optional debounce delay in milliseconds before calling `getPreview` (defaults to 0)
+  - Useful when `getPreview` makes expensive calls like web requests
+  - Prevents rapid calls when quickly navigating through items
 
 #### Returns
 

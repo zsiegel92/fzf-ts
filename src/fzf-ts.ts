@@ -25,10 +25,12 @@ export async function getUserSelection<T extends FzfSelection>({
     "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down",
   ],
   getPreview,
+  debounceMs = 0,
 }: {
   items: T[];
   fzfArgs?: string[];
-  getPreview?: ((item: T) => Promise<string>);
+  getPreview?: (item: T) => Promise<string>;
+  debounceMs?: number;
 }): Promise<T | undefined> {
   if (!items.length) {
     return undefined;
@@ -37,6 +39,7 @@ export async function getUserSelection<T extends FzfSelection>({
   const tmpPrev = await getTempFilePath();
   await Promise.all([fs.writeFile(tmpSel, ""), fs.writeFile(tmpPrev, "")]);
   let locked = false;
+  let debounceTimeout: NodeJS.Timeout | null = null;
   const monitor = setInterval(async () => {
     if (locked) return;
     try {
@@ -45,15 +48,37 @@ export async function getUserSelection<T extends FzfSelection>({
         const item = items.find((i, index) => index.toString() === hovered);
         if (!item) return;
         if (!getPreview) return;
-        const preview = await getPreview(item);
-        let fullPreview = preview;
-        if (item.previewPrefix) {
-          fullPreview = `${item.previewPrefix}\n\n${preview}`;
+
+        if (debounceTimeout) {
+          clearTimeout(debounceTimeout);
         }
-        if (item.previewSuffix) {
-          fullPreview = `${preview}\n\n${item.previewSuffix}`;
-        }
-        await fs.writeFile(tmpPrev, fullPreview);
+
+        debounceTimeout = setTimeout(async () => {
+          try {
+            const currentItem = item;
+            const preview = await getPreview(currentItem);
+
+            const currentHovered = (await fs.readFile(tmpSel, "utf8")).trim();
+            const currentSelectedItem = items.find(
+              (_, index) => index.toString() === currentHovered
+            );
+            if (currentSelectedItem !== currentItem && currentHovered !== "") {
+              return;
+            }
+
+            let fullPreview = preview;
+            if (currentItem.previewPrefix) {
+              fullPreview = `${currentItem.previewPrefix}\n\n${preview}`;
+            }
+            if (currentItem.previewSuffix) {
+              fullPreview = `${preview}\n\n${currentItem.previewSuffix}`;
+            }
+            await fs.writeFile(tmpPrev, fullPreview);
+          } catch {
+            /* ignore preview errors */
+          }
+        }, debounceMs);
+
         await fs.writeFile(tmpSel, "");
       }
     } catch {
@@ -86,6 +111,9 @@ export async function getUserSelection<T extends FzfSelection>({
   for await (const chunk of child.stdout) out += chunk;
   const code = await new Promise<number>((r) => child.on("close", r));
   clearInterval(monitor);
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout);
+  }
   if (code === 1 || code === 130) {
     return undefined;
   }
@@ -94,7 +122,7 @@ export async function getUserSelection<T extends FzfSelection>({
     .trim()
     .split("\n")
     .map((l) => l.split(" ")[0]);
-  const item = items.find((i, index) => chosenIds.includes(index.toString()));
+  const item = items.find((_, index) => chosenIds.includes(index.toString()));
   if (!item) throw new Error(`No item found for id: ${chosenIds}`);
   return item;
 }
