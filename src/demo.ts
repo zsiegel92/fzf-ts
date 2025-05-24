@@ -1,6 +1,7 @@
 import { getUserSelection, checkIfFzfIsInstalled } from "./fzf-ts";
 
 async function main() {
+  await checkIfFzfIsInstalled();
   const selection = await getUserSelection({
     items: Array.from({ length: 1000 }, (_, i) => ({
       display: `Item ${i}`,
