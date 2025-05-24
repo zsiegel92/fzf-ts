@@ -1,7 +1,7 @@
-import { getUserSelections, checkIfFzfIsInstalled } from "./fzf-ts";
+import { getUserSelection, checkIfFzfIsInstalled } from "./fzf-ts";
 
 async function main() {
-  const selections = await getUserSelections({
+  const selections = await getUserSelection({
     items: [
       {
         id: "1",

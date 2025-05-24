@@ -14,7 +14,7 @@ async function getTempFilePath(prefix = "fzf-ts-tmp-"): Promise<string> {
   return join(tempDir, "fzf-ts-tmp.tmp");
 }
 
-export async function getUserSelections<T extends FzfSelection>({
+export async function getUserSelection<T extends FzfSelection>({
   items,
   fzfArgs = [
     "--no-sort",
