@@ -3,10 +3,11 @@ type FzfSelection = {
     previewPrefix?: string;
     previewSuffix?: string;
 };
-export declare function getUserSelection<T extends FzfSelection>({ items, fzfArgs, getPreview, }: {
+export declare function getUserSelection<T extends FzfSelection>({ items, fzfArgs, getPreview, debounceMs, }: {
     items: T[];
     fzfArgs?: string[];
-    getPreview?: ((item: T) => Promise<string>);
+    getPreview?: (item: T) => Promise<string>;
+    debounceMs?: number;
 }): Promise<T | undefined>;
 export declare function checkIfFzfIsInstalled(): Promise<boolean>;
 export {};

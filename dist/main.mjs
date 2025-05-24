@@ -20,7 +20,8 @@ async function getUserSelection({
     "--bind",
     "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down"
   ],
-  getPreview
+  getPreview,
+  debounceMs = 0
 }) {
   if (!items.length) {
     return void 0;
@@ -29,6 +30,7 @@ async function getUserSelection({
   const tmpPrev = await getTempFilePath();
   await Promise.all([fs.writeFile(tmpSel, ""), fs.writeFile(tmpPrev, "")]);
   let locked = false;
+  let debounceTimeout = null;
   const monitor = setInterval(async () => {
     if (locked) return;
     try {
@@ -37,19 +39,35 @@ async function getUserSelection({
         const item2 = items.find((i, index) => index.toString() === hovered);
         if (!item2) return;
         if (!getPreview) return;
-        const preview = await getPreview(item2);
-        let fullPreview = preview;
-        if (item2.previewPrefix) {
-          fullPreview = `${item2.previewPrefix}
+        if (debounceTimeout) {
+          clearTimeout(debounceTimeout);
+        }
+        debounceTimeout = setTimeout(async () => {
+          try {
+            const currentItem = item2;
+            const preview = await getPreview(currentItem);
+            const currentHovered = (await fs.readFile(tmpSel, "utf8")).trim();
+            const currentSelectedItem = items.find(
+              (_, index) => index.toString() === currentHovered
+            );
+            if (currentSelectedItem !== currentItem && currentHovered !== "") {
+              return;
+            }
+            let fullPreview = preview;
+            if (currentItem.previewPrefix) {
+              fullPreview = `${currentItem.previewPrefix}
 
 ${preview}`;
-        }
-        if (item2.previewSuffix) {
-          fullPreview = `${preview}
+            }
+            if (currentItem.previewSuffix) {
+              fullPreview = `${preview}
 
-${item2.previewSuffix}`;
-        }
-        await fs.writeFile(tmpPrev, fullPreview);
+${currentItem.previewSuffix}`;
+            }
+            await fs.writeFile(tmpPrev, fullPreview);
+          } catch {
+          }
+        }, debounceMs);
         await fs.writeFile(tmpSel, "");
       }
     } catch {
@@ -81,12 +99,15 @@ ${item2.previewSuffix}`;
   for await (const chunk of child.stdout) out += chunk;
   const code = await new Promise((r) => child.on("close", r));
   clearInterval(monitor);
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout);
+  }
   if (code === 1 || code === 130) {
     return void 0;
   }
   if (code !== 0) throw new Error(`fzf exited with ${code}`);
   const chosenIds = out.trim().split("\n").map((l) => l.split(" ")[0]);
-  const item = items.find((i, index) => chosenIds.includes(index.toString()));
+  const item = items.find((_, index) => chosenIds.includes(index.toString()));
   if (!item) throw new Error(`No item found for id: ${chosenIds}`);
   return item;
 }
