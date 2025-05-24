@@ -9,10 +9,11 @@ type FzfSelection = {
   previewSuffix?: string;
 };
 
-async function getTempFilePath(prefix = "myapp-"): Promise<string> {
+async function getTempFilePath(prefix = "fzf-ts-tmp-"): Promise<string> {
   const tempDir = await fs.mkdtemp(join(tmpdir(), prefix));
-  return join(tempDir, "somefile.tmp");
+  return join(tempDir, "fzf-ts-tmp.tmp");
 }
+
 export async function getUserSelections<T extends FzfSelection>({
   items,
   fzfArgs = [
