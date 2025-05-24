@@ -6,7 +6,7 @@
   "prepublishOnly": "npm run build",
   "scripts": {
     "build": "tsup",
-    "dev": "tsx src/main.ts"
+    "dev": "tsx src/demo.ts"
   },
   "bin": {
     "fzf-ts": "dist/main.js"
