@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        /* Basic */
+        "target": "ESNext",
+        "moduleResolution": "node",
+        "module": "ES2020",
+        "lib": [
+            "ES2024"
+        ],
+        /* Output */
+        "outDir": "./dist",
+        "rootDir": "./src",
+        /* Interop */
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        /* Safety */
+        "strict": true,
+        "skipLibCheck": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist",
+        "scratch"
+    ]
+}

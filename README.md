@@ -31,7 +31,10 @@ Use it just like you would use fzf - pipe data to it and capture the output:
 cat file.txt | fzf-ts
 ls | fzf-ts
 find . -type f | fzf-ts --preview 'cat {}'
+echo -e "line 1\nline 2\nline 3" | fzf-ts
 ```
+
+All fzf command-line arguments are passed through directly to fzf.
 
 ### Library usage
 

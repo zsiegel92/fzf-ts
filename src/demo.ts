@@ -18,7 +18,13 @@ async function main() {
         x: 2,
       },
     ],
-    getPreview: async (item) => `${item.x}`,
+    getPreview: async (item) => {
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      return `
+      Viewing an item after a simulated delay of 0.25s:
+      ${JSON.stringify(item, null, 2)}
+      `;
+    },
   });
   console.log(selections);
 }

@@ -10,21 +10,25 @@
     "fzf-ts": "dist/main.js"
   },
   "scripts": {
-    "build": "tsc",
-    "postbuild": "echo '#!/usr/bin/env node' | cat - dist/main.js > temp && mv temp dist/main.js && chmod +x dist/main.js",
-    "demo": "tsx src/demo.ts",
     "dev": "tsx src/main.ts",
-    "prepublishOnly": "npm run build"
+    "test-cli": "echo \"1 test line 1\n2 test line 2\n3 test line 3\" | npm run dev",
+    "build:cli": "tsup",
+    "build:lib": "tsc --project tsconfig.lib.json",
+    "build": "npm run build:lib && npm run build:cli",
+    "demo": "tsx src/demo.ts",
+    "prepublishOnly": "npm run build:all",
+    "pub": "npm publish --access public"
   },
   "files": [
-    "dist",
+    "dist/**/*",
     "README.md"
   ],
   "dependencies": {},
   "devDependencies": {
     "tsx": "^4.17.0",
     "@types/node": "^22.4.1",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "tsup": "^8.0.0"
   },
   "engines": {
     "node": ">=14"
