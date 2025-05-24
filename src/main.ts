@@ -20,6 +20,7 @@ async function main() {
     ],
     getPreview: async (item) => `${item.x}`,
   });
+  console.log(selections);
 }
 
 main();
