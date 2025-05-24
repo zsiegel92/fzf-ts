@@ -1,4 +1,4 @@
-type FzfSelection = {
+export type FzfSelection = {
     display: string;
     previewPrefix?: string;
     previewSuffix?: string;
@@ -10,4 +10,3 @@ export declare function getUserSelection<T extends FzfSelection>({ items, fzfArg
     debounceMs?: number;
 }): Promise<T | undefined>;
 export declare function checkIfFzfIsInstalled(): Promise<boolean>;
-export {};

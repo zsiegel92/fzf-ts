@@ -1,21 +1,22 @@
 {
   "name": "fzf-ts",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Typescript interface to fzf utility",
   "author": "zsiegel",
   "license": "MIT",
   "main": "dist/fzf-ts.js",
   "module": "dist/fzf-ts.js",
   "types": "dist/fzf-ts.d.ts",
+  "type": "module",
   "exports": {
     ".": {
       "types": "./dist/fzf-ts.d.ts",
       "import": "./dist/fzf-ts.js",
-      "require": "./dist/fzf-ts.js"
+      "default": "./dist/fzf-ts.js"
     }
   },
   "bin": {
-    "fzf-ts": "dist/main.mjs"
+    "fzf-ts": "dist/main.js"
   },
   "scripts": {
     "dev": "tsx src/main.ts",

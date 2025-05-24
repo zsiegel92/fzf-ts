@@ -3,7 +3,7 @@ import { promises as fs } from "fs";
 import { tmpdir } from "os";
 import { join } from "path";
 
-type FzfSelection = {
+export type FzfSelection = {
   display: string;
   previewPrefix?: string;
   previewSuffix?: string;
