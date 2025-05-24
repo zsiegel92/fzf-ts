@@ -4,6 +4,7 @@
         "target": "ESNext",
         "moduleResolution": "node",
         "module": "ES2020",
+        "declaration": true,
         "lib": [
             "ES2024"
         ],

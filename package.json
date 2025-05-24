@@ -5,9 +5,17 @@
   "author": "zsiegel",
   "license": "MIT",
   "main": "dist/fzf-ts.js",
+  "module": "dist/fzf-ts.js",
   "types": "dist/fzf-ts.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/fzf-ts.d.ts",
+      "import": "./dist/fzf-ts.js",
+      "require": "./dist/fzf-ts.js"
+    }
+  },
   "bin": {
-    "fzf-ts": "dist/main.js"
+    "fzf-ts": "dist/main.mjs"
   },
   "scripts": {
     "dev": "tsx src/main.ts",
