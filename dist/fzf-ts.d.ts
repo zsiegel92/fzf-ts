@@ -3,6 +3,7 @@ export type FzfSelection = {
     previewPrefix?: string;
     previewSuffix?: string;
 };
+export declare const defaultFzfArgs: string[];
 export declare function getUserSelection<T extends FzfSelection>({ items, fzfArgs, getPreview, debounceMs, }: {
     items: T[];
     fzfArgs?: string[];

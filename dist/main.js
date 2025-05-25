@@ -10,16 +10,17 @@ async function getTempFilePath(prefix = "fzf-ts-tmp-") {
   const tempDir = await fs.mkdtemp(join(tmpdir(), prefix));
   return join(tempDir, "fzf-ts-tmp.tmp");
 }
+var defaultFzfArgs = [
+  "--no-sort",
+  "--no-mouse",
+  "--wrap",
+  "--ansi",
+  "--bind",
+  "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down"
+];
 async function getUserSelection({
   items,
-  fzfArgs = [
-    "--no-sort",
-    "--no-mouse",
-    "--wrap",
-    "--ansi",
-    "--bind",
-    "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down"
-  ],
+  fzfArgs = defaultFzfArgs,
   getPreview,
   debounceMs = 0
 }) {

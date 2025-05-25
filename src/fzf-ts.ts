@@ -14,16 +14,18 @@ async function getTempFilePath(prefix = "fzf-ts-tmp-"): Promise<string> {
   return join(tempDir, "fzf-ts-tmp.tmp");
 }
 
+export const defaultFzfArgs = [
+  "--no-sort",
+  "--no-mouse",
+  "--wrap",
+  "--ansi",
+  "--bind",
+  "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down",
+];
+
 export async function getUserSelection<T extends FzfSelection>({
   items,
-  fzfArgs = [
-    "--no-sort",
-    "--no-mouse",
-    "--wrap",
-    "--ansi",
-    "--bind",
-    "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down",
-  ],
+  fzfArgs = defaultFzfArgs,
   getPreview,
   debounceMs = 0,
 }: {
