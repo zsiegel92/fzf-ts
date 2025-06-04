@@ -74,20 +74,22 @@ ${currentItem.previewSuffix}`;
     } catch {
     }
   }, 10);
+  const batCmd = `bat --color=always --style=-header-filename,-numbers --wrap=character --terminal-width=$FZF_PREVIEW_COLUMNS "$PREV"`;
+  const catCmd = `cat "$PREV"`;
+  const batOrCatCmd = `if command -v bat &> /dev/null; then ${batCmd}; else ${catCmd}; fi`;
   const previewCmd = [
-    `SEL="${tmpSel}"`,
-    `PREV="${tmpPrev}"`,
-    `bash -c '`,
-    `  echo "$1" > "$SEL";`,
-    `  while [[ -s "$SEL" ]]; do sleep 0.01; done;`,
-    `  cat "$PREV"`,
-    `' -- {1}`
+    `SEL="${tmpSel}";`,
+    `PREV="${tmpPrev}";`,
+    `echo "$1" > "$SEL";`,
+    `while [[ -s "$SEL" ]]; do sleep 0.01; done;`,
+    batOrCatCmd
   ].join(" ");
+  const previewArg = `bash -c '${previewCmd}' -- {1}`;
   const args = [
     ...fzfArgs,
     "--delimiter= ",
     "--with-nth=2..",
-    ...getPreview ? ["--preview", previewCmd] : []
+    ...getPreview ? ["--preview", previewArg] : []
   ];
   const child = spawn("fzf", args, {
     stdio: ["pipe", "pipe", "inherit"]
