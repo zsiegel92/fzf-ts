@@ -14,7 +14,7 @@ export const defaultFzfArgs = [
     "--bind",
     "alt-up:preview-up,alt-down:preview-down,alt-u:preview-page-up,alt-d:preview-page-down",
 ];
-export async function getUserSelection({ items, fzfArgs = defaultFzfArgs, getPreview, debounceMs = 0, }) {
+export async function getUserSelection({ items, fzfArgs = defaultFzfArgs, getPreview, debounceMs = 0, previewLanguage = "markdown", }) {
     if (!items.length) {
         return undefined;
     }
@@ -66,7 +66,10 @@ export async function getUserSelection({ items, fzfArgs = defaultFzfArgs, getPre
             /* ignore EBUSY/ENOENT etc. – fzf may still be opening the file */
         }
     }, 10);
-    const batCmd = `bat --color=always --style=-header-filename,-numbers --wrap=character --terminal-width=$FZF_PREVIEW_COLUMNS "$PREV"`;
+    const batPreviewLanguageArgument = previewLanguage
+        ? `-l ${previewLanguage}`
+        : "";
+    const batCmd = `bat --color=always --style=-header-filename,-numbers --wrap=character --terminal-width=$FZF_PREVIEW_COLUMNS ${batPreviewLanguageArgument} "$PREV"`;
     const catCmd = `cat "$PREV"`;
     const batOrCatCmd = `if command -v bat &> /dev/null; then ${batCmd}; else ${catCmd}; fi`;
     const previewCmd = [

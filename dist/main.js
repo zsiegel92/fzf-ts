@@ -22,7 +22,8 @@ async function getUserSelection({
   items,
   fzfArgs = defaultFzfArgs,
   getPreview,
-  debounceMs = 0
+  debounceMs = 0,
+  previewLanguage = "markdown"
 }) {
   if (!items.length) {
     return void 0;
@@ -74,7 +75,8 @@ ${currentItem.previewSuffix}`;
     } catch {
     }
   }, 10);
-  const batCmd = `bat --color=always --style=-header-filename,-numbers --wrap=character --terminal-width=$FZF_PREVIEW_COLUMNS "$PREV"`;
+  const batPreviewLanguageArgument = previewLanguage ? `-l ${previewLanguage}` : "";
+  const batCmd = `bat --color=always --style=-header-filename,-numbers --wrap=character --terminal-width=$FZF_PREVIEW_COLUMNS ${batPreviewLanguageArgument} "$PREV"`;
   const catCmd = `cat "$PREV"`;
   const batOrCatCmd = `if command -v bat &> /dev/null; then ${batCmd}; else ${catCmd}; fi`;
   const previewCmd = [
